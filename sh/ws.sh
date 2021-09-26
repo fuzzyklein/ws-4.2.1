@@ -9,9 +9,9 @@ printf -v VERSION "1.0"
 
 export debug=0
 export verbose=0
-export logfile=
+# export logfile=
 
-optstring=e:dv
+optstring=e:dv*-:
 
 while getopts $optstring opt; do
   case $opt in

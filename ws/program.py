@@ -27,7 +27,9 @@ class Program():
         """
 
         args = Arguments()
+        pp(vars(args))
         conf = Configure(args['config'])
+        pp(conf)
         env = Environment()
 
         try:
@@ -47,12 +49,15 @@ class Program():
 
     def startlog(self):
         """ Set up logging. """
+        if __debug__:
+            printc('<green>Running<reset> `startlog` ...')
+            print(f'{self.settings["logfile"]=}')
         self.logger = logging.getLogger('root')
         if self.settings['log'] or 'logfile' in self.settings.keys():
-            p = Path(self.settings['log'] if self.settings['log'] else self.settings['logfile'])
+            p = BASEDIR / (self.settings['log'] if self.settings['log'] else self.settings['logfile'])
             # print(f'{__debug__=}')
             if __debug__:
-                printc(f'<cyan>Log file<reset>: {p.name}')
+                printc(f'<cyan>Log file<reset>: {str(p)}')
                 print()
 
             if not p.exists():
@@ -74,8 +79,8 @@ class Program():
         self.logger.setLevel(level)
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-        if self.settings['logfile']:
-            fh = logging.FileHandler(self.settings['logfile'], mode='w')
+        if p:
+            fh = logging.FileHandler(p.resolve(), mode='w')
             fh.setLevel(level)
             fh.setFormatter(formatter)
             self.logger.addHandler(fh)
